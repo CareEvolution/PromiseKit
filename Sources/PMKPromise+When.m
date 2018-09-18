@@ -38,11 +38,12 @@
         rejecter(err); \
     }
 
-    if ([promises isKindOfClass:[NSDictionary class]])
+    if ([promises isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *promisesDictionary = (NSDictionary *)promises;
         return newPromise = [PMKPromise new:^(PMKPromiseFulfiller fulfiller, PMKPromiseRejecter rejecter){
             NSMutableDictionary *results = [NSMutableDictionary new];
-            for (id key in promises) {
-                PMKPromise *promise = promises[key];
+            for (id key in promisesDictionary) {
+                PMKPromise *promise = promisesDictionary[key];
                 if (![promise isKindOfClass:[PMKPromise class]])
                     promise = [PMKPromise promiseWithValue:promise];
                 promise.catch(rejecter(key));
@@ -54,6 +55,7 @@
                 });
             }
         }];
+    }
 
     return newPromise = [PMKPromise new:^(PMKPromiseFulfiller fulfiller, PMKPromiseRejecter rejecter){
         NSPointerArray *results = nil;
